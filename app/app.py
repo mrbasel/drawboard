@@ -1,18 +1,22 @@
+import os
+
 from flask import Flask
 from flask_socketio import SocketIO, emit
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "SECRET!!:)"
 socketio = SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
 
-@app.route("/")
-def home():
-    return "Hello Flask"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
-@socketio.on("mouseEvent")
-def handle_mouse(cordinates):
-    emit("newData", cordinates, broadcast=True)
+
+@socketio.on("newDrawing")
+def handle_new_drawing(cordinates):
+    emit("newDrawing", cordinates, broadcast=True)
+
 
 if __name__ == "__main__":
     socketio.run(app)

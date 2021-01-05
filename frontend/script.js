@@ -5,18 +5,19 @@ window.onload = () => {
         console.log("You are connected.");
     })
 
-    socket.on("newData", (cordinates) => {
+    socket.on("newDrawing", (coordinates) => {
         ctx.beginPath();
-        for (let index = 0; index < cordinates.length; index++) {
-            ctx.lineTo(cordinates[index].xCord, cordinates[index].yCord);
+        for (let index = 0; index < coordinates.length; index++) {
+            ctx.lineTo(coordinates[index].xCord, coordinates[index].yCord);
             ctx.stroke();
         }
     })
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+
     let isMouseDown = false;
-    let cords = [];
+    let drawingCoordinates = [];
 
     // Set canvas to fullscreen
     canvas.width = window.innerWidth;
@@ -35,7 +36,7 @@ window.onload = () => {
             ctx.lineTo(x.clientX, x.clientY);
             ctx.stroke();
 
-            cords.push({
+            drawingCoordinates.push({
                 xCord: x.clientX,
                 yCord: x.clientY
             });
@@ -47,7 +48,7 @@ window.onload = () => {
         ctx.lineTo(x.clientX, x.clientY);
         ctx.stroke();
 
-        socket.emit("mouseEvent", cords);
-        cords = [];
+        socket.emit("newDrawing", drawingCoordinates);
+        drawingCoordinates = [];
     })
 }
