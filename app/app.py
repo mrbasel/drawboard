@@ -12,9 +12,15 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/home")
+def home():
+    return render_template("home.html")
 
 
 @socketio.on("newDrawing")
