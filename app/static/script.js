@@ -1,5 +1,5 @@
 window.onload = () => {
-    let socket = io.connect('http://127.0.0.1:5000');
+    let socket = io();
 
     socket.on("connect", () => {
         console.log("You are connected.");
