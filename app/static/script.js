@@ -3,6 +3,11 @@ window.onload = () => {
 
     socket.on("connect", () => {
         console.log("You are connected.");
+
+        let url = window.location.href.split("/")
+        let roomName = url[url.length - 1];
+        socket.emit("create", roomName);
+        window.roomName = roomName;
     })
 
     socket.on("newDrawing", (coordinates) => {
@@ -48,7 +53,10 @@ window.onload = () => {
         ctx.lineTo(x.clientX, x.clientY);
         ctx.stroke();
 
-        socket.emit("newDrawing", drawingCoordinates);
+        socket.emit("newDrawing", {
+            coordinates: drawingCoordinates,
+            room: window.roomName
+        });
         drawingCoordinates = [];
     })
 }
