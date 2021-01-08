@@ -42,32 +42,34 @@
                             </div>
                             <div class="modal-body">
                                 <div class="container">
-                                    <form class="text-start" action="POST">
+                                    <form action="{{ url_for('create_room_form') }}" id="createRoomForm"
+                                        class="text-start" method="POST">
                                         <div class="mb-3">
-                                            <label for="name" class="col-form-label">Your name:</label>
-                                            <input type="text" class="form-control" id="name">
+                                            <label for="name" class="col-form-label">Room name:</label>
+                                            <input type="text" class="form-control" id="name" name="name">
                                         </div>
                                         <div class="mb-3">
                                             <input class="form-check-input" type="radio" name="roomVisiblity"
-                                                id="public">
+                                                id="public" value="public">
                                             <label class="form-check-label" for="public">
                                                 Public room
                                             </label>
                                         </div>
                                         <div class="mb-3">
                                             <input class="form-check-input" type="radio" name="roomVisiblity"
-                                                id="private">
+                                                id="private" value="private">
                                             <label class="form-check-label" for="private">
                                                 Private room
                                             </label>
                                         </div>
-                                    </form>
+
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Create</button>
+                                <button id="createRoomBtn" type="submit" class="btn btn-primary">Create</button>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
