@@ -49,7 +49,10 @@ def create_room(room):
 def handle_new_drawing(data):
     emit(
         "newDrawing",
-        data["coordinates"],
+        {
+            "coordinates": data["coordinates"],
+            "color": data["color"]
+        },
         broadcast=True,
         include_self=False,
         room=data["room"],

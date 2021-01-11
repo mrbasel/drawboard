@@ -9,6 +9,7 @@ window.onload = () => {
 
     // Flag to disable stroke recording when using the beginStroke and endStroke methods
     let recordStrokes = false;
+    let strokeColor = "#000000";
 
     socket.on("connect", () => {
         console.log("You are connected.");
@@ -19,9 +20,11 @@ window.onload = () => {
         window.roomName = roomName;
     })
 
-    socket.on("newDrawing", (coordinates) => {
+    socket.on("newDrawing", (data) => {
         recordStrokes = false;
-        const points = coordinates.slice();
+        sketchpad.color = data.color;
+
+        const points = data.coordinates.slice();
         const firstPoint = points.shift();
         sketchpad.beginStroke(firstPoint.x, firstPoint.y);
 
@@ -34,6 +37,7 @@ window.onload = () => {
             prevPoint = { x, y };
         }
         sketchpad.endStroke(prevPoint.x, prevPoint.y);
+        sketchpad.color = strokeColor;
     });
 
     socket.on("clearCanvas", () => sketchpad.clear());
@@ -43,6 +47,7 @@ window.onload = () => {
             console.log(stroke);
             socket.emit("newDrawing", {
                 coordinates: stroke.points,
+                color: sketchpad.color,
                 room: window.roomName
             });
         }
@@ -66,6 +71,7 @@ window.onload = () => {
         });
     });
     colorPicker.addEventListener("change", (event) => {
+        strokeColor = event.target.value;
         sketchpad.color = event.target.value;
     });
     selectMode.addEventListener("change", () => {
