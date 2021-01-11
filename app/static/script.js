@@ -36,6 +36,8 @@ window.onload = () => {
         sketchpad.endStroke(prevPoint.x, prevPoint.y);
     });
 
+    socket.on("clearCanvas", () => sketchpad.clear());
+
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
         if (recordStrokes) {
             console.log(stroke);
@@ -57,14 +59,19 @@ window.onload = () => {
     const selectMode = document.querySelector("#select-mode");
     const thicknessSlider = document.querySelector("#thickness-slider");
 
-    clearButton.addEventListener("click", () => sketchpad.clear())
+    clearButton.addEventListener("click", () => {
+        sketchpad.clear();
+        socket.emit("clearCanvas", {
+            room: window.roomName
+        });
+    });
     colorPicker.addEventListener("change", (event) => {
         sketchpad.color = event.target.value;
     });
     selectMode.addEventListener("change", () => {
         sketchpad.mode = selectMode.value;
     });
-    thicknessSlider.addEventListener("change", () => { 
-        sketchpad.weight = parseInt(thicknessSlider.value); 
+    thicknessSlider.addEventListener("change", () => {
+        sketchpad.weight = parseInt(thicknessSlider.value);
     });
 }

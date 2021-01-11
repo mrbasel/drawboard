@@ -56,5 +56,10 @@ def handle_new_drawing(data):
     )
 
 
+@socketio.on("clearCanvas")
+def clear_canvas(data):
+    emit("clearCanvas", broadcast=True, include_self=False, room=data["room"])
+
+
 if __name__ == "__main__":
     socketio.run(app, debug=True)
