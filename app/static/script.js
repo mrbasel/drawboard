@@ -50,4 +50,21 @@ window.onload = () => {
         recordStrokes = true;
         console.log("Mouse down");
     })
+
+
+    const clearButton = document.querySelector("#clear-btn");
+    const colorPicker = document.querySelector("#color-picker")
+    const selectMode = document.querySelector("#select-mode");
+    const thicknessSlider = document.querySelector("#thickness-slider");
+
+    clearButton.addEventListener("click", () => sketchpad.clear())
+    colorPicker.addEventListener("change", (event) => {
+        sketchpad.color = event.target.value;
+    });
+    selectMode.addEventListener("change", () => {
+        sketchpad.mode = selectMode.value;
+    });
+    thicknessSlider.addEventListener("change", () => { 
+        sketchpad.weight = parseInt(thicknessSlider.value); 
+    });
 }
