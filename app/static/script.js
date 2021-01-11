@@ -1,27 +1,23 @@
 window.onload = () => {
     let socket = io();
+    const canvasData = new CanvasData(getRoomName(), true, "#000000");
+
+
     const canvas = document.querySelector('#canvas');
     const sketchpad = new Atrament(canvas, {
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
     });
     sketchpad.recordStrokes = true;
-
-    // Flag to disable stroke recording when using the beginStroke and endStroke methods
-    let recordStrokes = false;
-    let strokeColor = "#000000";
 
     socket.on("connect", () => {
         console.log("You are connected.");
 
-        let url = window.location.href.split("/")
-        let roomName = url[url.length - 1];
-        socket.emit("create", roomName);
-        window.roomName = roomName;
+        socket.emit("create", canvasData.roomName);
     })
 
     socket.on("newDrawing", (data) => {
-        recordStrokes = false;
+        canvasData.recordStrokes = false;
         sketchpad.color = data.color;
 
         const points = data.coordinates.slice();
@@ -37,24 +33,24 @@ window.onload = () => {
             prevPoint = { x, y };
         }
         sketchpad.endStroke(prevPoint.x, prevPoint.y);
-        sketchpad.color = strokeColor;
+        sketchpad.color = toString(canvasData.strokeColor);
     });
 
     socket.on("clearCanvas", () => sketchpad.clear());
 
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
-        if (recordStrokes) {
+        if (canvasData.recordStrokes) {
             console.log(stroke);
             socket.emit("newDrawing", {
                 coordinates: stroke.points,
                 color: sketchpad.color,
-                room: window.roomName
+                room: canvasData.roomName
             });
         }
     }
     );
     canvas.addEventListener("mousedown", (event) => {
-        recordStrokes = true;
+        canvasData.recordStrokes = true;
         console.log("Mouse down");
     })
 
@@ -67,11 +63,11 @@ window.onload = () => {
     clearButton.addEventListener("click", () => {
         sketchpad.clear();
         socket.emit("clearCanvas", {
-            room: window.roomName
+            room: canvasData.roomName
         });
     });
     colorPicker.addEventListener("change", (event) => {
-        strokeColor = event.target.value;
+        canvasData.strokeColor = event.target.value;
         sketchpad.color = event.target.value;
     });
     selectMode.addEventListener("change", () => {
@@ -80,4 +76,21 @@ window.onload = () => {
     thicknessSlider.addEventListener("change", () => {
         sketchpad.weight = parseInt(thicknessSlider.value);
     });
+}
+
+
+class CanvasData {
+    // Object for holding state
+    constructor(roomName, recordStrokes, strokesColor) {
+        this.roomName = roomName;
+        this.recordStrokes = recordStrokes;
+        this.strokesColor = strokesColor;
+    }
+}
+
+const getRoomName = () => {
+    const url = window.location.href.split("/");
+    const roomName = url[url.length - 1];
+
+    return roomName;
 }
