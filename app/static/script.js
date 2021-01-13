@@ -17,8 +17,11 @@ window.onload = () => {
     })
 
     socket.on("newDrawing", (data) => {
+        const previousMode = sketchpad.mode;
+
         canvasData.recordStrokes = false;
         sketchpad.color = data.color;
+        sketchpad.mode = "draw";
 
         const points = data.coordinates.slice();
         const firstPoint = points.shift();
@@ -34,6 +37,7 @@ window.onload = () => {
         }
         sketchpad.endStroke(prevPoint.x, prevPoint.y);
         sketchpad.color = toString(canvasData.strokeColor);
+        sketchpad.mode = previousMode;
     });
 
     socket.on("clearCanvas", () => sketchpad.clear());
