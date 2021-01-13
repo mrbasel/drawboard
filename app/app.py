@@ -59,6 +59,18 @@ def handle_new_drawing(data):
     )
 
 
+@socketio.on("eraseEvent")
+def handle_erase_event(data):
+    emit(
+        "eraseEvent",
+        {
+            "coordinates": data["coordinates"]
+        },
+        broadcast=True,
+        include_self=False,
+        room=data["room"],
+    )
+
 @socketio.on("clearCanvas")
 def clear_canvas(data):
     emit("clearCanvas", broadcast=True, include_self=False, room=data["room"])

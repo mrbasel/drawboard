@@ -42,14 +42,48 @@ window.onload = () => {
 
     socket.on("clearCanvas", () => sketchpad.clear());
 
+    socket.on("eraseEvent", (data) => {
+        console.log("Erase event");
+        const previousMode = sketchpad.mode;
+
+        canvasData.recordStrokes = false;
+        sketchpad.mode = "erase";
+
+        const points = data.coordinates.slice();
+        const firstPoint = points.shift();
+        sketchpad.beginStroke(firstPoint.x, firstPoint.y);
+
+        let prevPoint = firstPoint;
+        while (points.length > 0) {
+            const point = points.shift();
+
+            const { x, y } = sketchpad.draw(point.x, point.y, prevPoint.x, prevPoint.y);
+
+            prevPoint = { x, y };
+        }
+        sketchpad.endStroke(prevPoint.x, prevPoint.y);
+
+        // Set mode back to user's previous mode before erase event
+        sketchpad.mode = previousMode;
+    })
+
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
         if (canvasData.recordStrokes) {
-            console.log(stroke);
-            socket.emit("newDrawing", {
-                coordinates: stroke.points,
-                color: sketchpad.color,
-                room: canvasData.roomName
-            });
+
+            if (sketchpad.mode == "draw") {
+                console.log(stroke);
+                socket.emit("newDrawing", {
+                    coordinates: stroke.points,
+                    color: sketchpad.color,
+                    room: canvasData.roomName
+                });
+            }
+            else if (sketchpad.mode == "erase") {
+                socket.emit("eraseEvent", {
+                    coordinates: stroke.points,
+                    room: canvasData.roomName
+                });
+            }
         }
     }
     );
