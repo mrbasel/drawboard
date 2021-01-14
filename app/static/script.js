@@ -18,6 +18,7 @@ window.onload = () => {
 
     socket.on("newDrawing", (data) => {
         const previousMode = sketchpad.mode;
+        const previousColor = sketchpad.color;
 
         canvasData.recordStrokes = false;
         sketchpad.color = data.color;
@@ -36,7 +37,7 @@ window.onload = () => {
             prevPoint = { x, y };
         }
         sketchpad.endStroke(prevPoint.x, prevPoint.y);
-        sketchpad.color = toString(canvasData.strokeColor);
+        sketchpad.color = previousColor;
         sketchpad.mode = previousMode;
     });
 
@@ -105,7 +106,7 @@ window.onload = () => {
         });
     });
     colorPicker.addEventListener("change", (event) => {
-        canvasData.strokeColor = event.target.value;
+        canvasData.strokesColor = event.target.value;
         sketchpad.color = event.target.value;
     });
     selectMode.addEventListener("change", () => {
