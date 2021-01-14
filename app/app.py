@@ -45,10 +45,10 @@ def create_room(room):
     print("Joined room " + room)
 
 
-@socketio.on("newDrawing")
+@socketio.on("drawEvent")
 def handle_new_drawing(data):
     emit(
-        "newDrawing",
+        "drawEvent",
         {
             "coordinates": data["coordinates"],
             "color": data["color"]
@@ -71,9 +71,9 @@ def handle_erase_event(data):
         room=data["room"],
     )
 
-@socketio.on("clearCanvas")
+@socketio.on("clearEvent")
 def clear_canvas(data):
-    emit("clearCanvas", broadcast=True, include_self=False, room=data["room"])
+    emit("clearEvent", broadcast=True, include_self=False, room=data["room"])
 
 
 if __name__ == "__main__":

@@ -1,8 +1,6 @@
 window.onload = () => {
     let socket = io();
     const canvasData = new CanvasData(getRoomName(), true, "#000000");
-
-
     const canvas = document.querySelector('#canvas');
     const sketchpad = new Atrament(canvas, {
         width: window.innerWidth,
@@ -10,70 +8,20 @@ window.onload = () => {
     });
     sketchpad.recordStrokes = true;
 
-    socket.on("connect", () => {
-        console.log("You are connected.");
+    socket.on("connect", () => socket.emit("create", canvasData.roomName));
 
-        socket.emit("create", canvasData.roomName);
-    })
+    socket.on("drawEvent", (strokeData) => drawStroke(strokeData, sketchpad, canvasData));
 
-    socket.on("newDrawing", (data) => {
-        const previousMode = sketchpad.mode;
-        const previousColor = sketchpad.color;
+    socket.on("clearEvent", () => sketchpad.clear());
 
-        canvasData.recordStrokes = false;
-        sketchpad.color = data.color;
-        sketchpad.mode = "draw";
-
-        const points = data.coordinates.slice();
-        const firstPoint = points.shift();
-        sketchpad.beginStroke(firstPoint.x, firstPoint.y);
-
-        let prevPoint = firstPoint;
-        while (points.length > 0) {
-            const point = points.shift();
-
-            const { x, y } = sketchpad.draw(point.x, point.y, prevPoint.x, prevPoint.y);
-
-            prevPoint = { x, y };
-        }
-        sketchpad.endStroke(prevPoint.x, prevPoint.y);
-        sketchpad.color = previousColor;
-        sketchpad.mode = previousMode;
-    });
-
-    socket.on("clearCanvas", () => sketchpad.clear());
-
-    socket.on("eraseEvent", (data) => {
-        console.log("Erase event");
-        const previousMode = sketchpad.mode;
-
-        canvasData.recordStrokes = false;
-        sketchpad.mode = "erase";
-
-        const points = data.coordinates.slice();
-        const firstPoint = points.shift();
-        sketchpad.beginStroke(firstPoint.x, firstPoint.y);
-
-        let prevPoint = firstPoint;
-        while (points.length > 0) {
-            const point = points.shift();
-
-            const { x, y } = sketchpad.draw(point.x, point.y, prevPoint.x, prevPoint.y);
-
-            prevPoint = { x, y };
-        }
-        sketchpad.endStroke(prevPoint.x, prevPoint.y);
-
-        // Set mode back to user's previous mode before erase event
-        sketchpad.mode = previousMode;
-    })
+    socket.on("eraseEvent", (strokeData) => eraseStroke(strokeData, sketchpad, canvasData));
 
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
         if (canvasData.recordStrokes) {
 
             if (sketchpad.mode == "draw") {
                 console.log(stroke);
-                socket.emit("newDrawing", {
+                socket.emit("drawEvent", {
                     coordinates: stroke.points,
                     color: sketchpad.color,
                     room: canvasData.roomName
@@ -88,11 +36,8 @@ window.onload = () => {
         }
     }
     );
-    canvas.addEventListener("mousedown", (event) => {
-        canvasData.recordStrokes = true;
-        console.log("Mouse down");
-    })
 
+    canvas.addEventListener("mousedown", (event) => canvasData.recordStrokes = true);
 
     const clearButton = document.querySelector("#clear-btn");
     const colorPicker = document.querySelector("#color-picker")
@@ -101,7 +46,7 @@ window.onload = () => {
 
     clearButton.addEventListener("click", () => {
         sketchpad.clear();
-        socket.emit("clearCanvas", {
+        socket.emit("clearEvent", {
             room: canvasData.roomName
         });
     });
@@ -132,4 +77,54 @@ const getRoomName = () => {
     const roomName = url[url.length - 1];
 
     return roomName;
+}
+
+const drawStroke = (strokeData, sketchpad, canvasData) => {
+    const previousMode = sketchpad.mode;
+    const previousColor = sketchpad.color;
+
+    canvasData.recordStrokes = false;
+    sketchpad.color = strokeData.color;
+    sketchpad.mode = "draw";
+
+    const points = strokeData.coordinates.slice();
+    const firstPoint = points.shift();
+    sketchpad.beginStroke(firstPoint.x, firstPoint.y);
+
+    let prevPoint = firstPoint;
+    while (points.length > 0) {
+        const point = points.shift();
+
+        const { x, y } = sketchpad.draw(point.x, point.y, prevPoint.x, prevPoint.y);
+
+        prevPoint = { x, y };
+    }
+    sketchpad.endStroke(prevPoint.x, prevPoint.y);
+    sketchpad.color = previousColor;
+    sketchpad.mode = previousMode;
+
+}
+
+const eraseStroke = (strokeData, sketchpad, canvasData) => {
+    const previousMode = sketchpad.mode;
+
+    canvasData.recordStrokes = false;
+    sketchpad.mode = "erase";
+
+    const points = strokeData.coordinates.slice();
+    const firstPoint = points.shift();
+    sketchpad.beginStroke(firstPoint.x, firstPoint.y);
+
+    let prevPoint = firstPoint;
+    while (points.length > 0) {
+        const point = points.shift();
+
+        const { x, y } = sketchpad.draw(point.x, point.y, prevPoint.x, prevPoint.y);
+
+        prevPoint = { x, y };
+    }
+    sketchpad.endStroke(prevPoint.x, prevPoint.y);
+
+    // Set mode back to user's previous mode before erase event
+    sketchpad.mode = previousMode;
 }
