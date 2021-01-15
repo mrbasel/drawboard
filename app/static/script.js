@@ -25,14 +25,15 @@ window.onload = () => {
     socket.on("clearEvent", () => sketchpad.clear());
 
     socket.on("eraseEvent", (strokeData) => eraseStroke(strokeData, sketchpad, canvasData));
-    
+
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
         if (canvasData.recordStrokes) {
-
+            
             if (sketchpad.mode == "draw") {
                 console.log(stroke);
                 socket.emit("drawEvent", {
                     coordinates: stroke.points,
+                    weight: stroke.weight,
                     color: sketchpad.color,
                     room: canvasData.roomName
                 });
@@ -40,6 +41,7 @@ window.onload = () => {
             else if (sketchpad.mode == "erase") {
                 socket.emit("eraseEvent", {
                     coordinates: stroke.points,
+                    weight: stroke.weight,
                     room: canvasData.roomName
                 });
             }

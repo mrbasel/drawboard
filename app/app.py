@@ -51,7 +51,8 @@ def handle_new_drawing(data):
         "drawEvent",
         {
             "coordinates": data["coordinates"],
-            "color": data["color"]
+            "color": data["color"],
+            "weight": data["weight"],
         },
         broadcast=True,
         include_self=False,
@@ -64,12 +65,14 @@ def handle_erase_event(data):
     emit(
         "eraseEvent",
         {
-            "coordinates": data["coordinates"]
+            "coordinates": data["coordinates"],
+            "weight": data["weight"],
         },
         broadcast=True,
         include_self=False,
         room=data["room"],
     )
+
 
 @socketio.on("clearEvent")
 def clear_canvas(data):
