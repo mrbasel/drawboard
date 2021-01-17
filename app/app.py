@@ -1,4 +1,5 @@
 import os
+import secrets
 
 from flask import Flask, request, render_template, url_for, redirect
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -13,23 +14,23 @@ socketio.init_app(app, cors_allowed_origins="*")
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 
-@app.route("/home")
+@app.route("/")
 def home():
     return render_template("home.html")
 
 
-@app.route("/room/<name>")
-def draw_room(name):
+@app.route("/room/<room_id>")
+def draw_room(room_id):
     return render_template("draw_room.html")
 
 
 @app.route("/room/form/create", methods=["POST"])
 def create_room_form():
     if request.form:
-        room_name = request.form.get("name")
+        username = request.form.get("name")
         room_visibility = request.form.get("roomVisiblity")
 
-        return redirect(url_for("draw_room", name=room_name))
+        return redirect(url_for("draw_room", room_id=secrets.token_hex(8)))
     else:
         return redirect(url_for("home"))
 

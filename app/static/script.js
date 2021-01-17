@@ -4,13 +4,13 @@ import {
     selectModeButton,
     thicknessSlider,
 } from "./constants.js";
-import { getRoomName, CanvasData } from "./helpers.js";
+import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
 
 
 window.onload = () => {
     let socket = io();
-    const canvasData = new CanvasData(getRoomName(), true, "#000000");
+    const canvasData = new CanvasData(getRoomId(), true, "#000000");
     const canvas = document.querySelector('#canvas');
     const sketchpad = new Atrament(canvas, {
         width: window.innerWidth,
@@ -18,7 +18,7 @@ window.onload = () => {
     });
     sketchpad.recordStrokes = true;
 
-    socket.on("connect", () => socket.emit("create", canvasData.roomName));
+    socket.on("connect", () => { socket.emit("create", canvasData.roomId); console.log(canvasData.roomId); });
 
     socket.on("drawEvent", (strokeData) => drawStroke(strokeData, sketchpad, canvasData));
 
@@ -28,21 +28,21 @@ window.onload = () => {
 
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
         if (canvasData.recordStrokes) {
-            
+
             if (sketchpad.mode == "draw") {
                 console.log(stroke);
                 socket.emit("drawEvent", {
                     coordinates: stroke.points,
                     weight: stroke.weight,
                     color: sketchpad.color,
-                    room: canvasData.roomName
+                    room: canvasData.roomId
                 });
             }
             else if (sketchpad.mode == "erase") {
                 socket.emit("eraseEvent", {
                     coordinates: stroke.points,
                     weight: stroke.weight,
-                    room: canvasData.roomName
+                    room: canvasData.roomId
                 });
             }
         }
@@ -54,7 +54,7 @@ window.onload = () => {
     clearButton.addEventListener("click", () => {
         sketchpad.clear();
         socket.emit("clearEvent", {
-            room: canvasData.roomName
+            room: canvasData.roomId
         });
     });
     colorPicker.addEventListener("change", (event) => {

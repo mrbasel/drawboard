@@ -1,17 +1,17 @@
 class CanvasData {
     // Object for holding state
-    constructor(roomName, recordStrokes, strokesColor) {
-        this.roomName = roomName;
+    constructor(roomId, recordStrokes, strokesColor) {
+        this.roomId = roomId;
         this.recordStrokes = recordStrokes;
         this.strokesColor = strokesColor;
     }
 }
 
-const getRoomName = () => {
+const getRoomId = () => {
     const url = window.location.href.split("/");
-    const roomName = url[url.length - 1];
+    const roomId = url[url.length - 1];
 
-    return roomName;
+    return roomId;
 }
 
-export { getRoomName, CanvasData };
+export { getRoomId, CanvasData };
