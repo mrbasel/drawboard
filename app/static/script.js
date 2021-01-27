@@ -18,7 +18,13 @@ window.onload = () => {
     });
     sketchpad.recordStrokes = true;
 
+    window.onbeforeunload = () => {
+        socket.emit('client_disconnecting', { roomId: canvasData.roomId });
+        return "";
+    }
+
     socket.on("connect", () => { socket.emit("create", canvasData.roomId); console.log(canvasData.roomId); });
+    socket.on("disconnect", () => { socket.emit("disconnect") });
 
     socket.on("drawEvent", (strokeData) => drawStroke(strokeData, sketchpad, canvasData));
 

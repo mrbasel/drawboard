@@ -2,6 +2,7 @@ import os
 import secrets
 
 from flask import Flask, request, render_template, url_for, redirect
+from redis import Redis
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from dotenv import load_dotenv
 
@@ -10,6 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
+db = Redis()
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
@@ -19,8 +21,14 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/room/<room_id>")
+@app.route("/room/<room_id>", methods=["GET"])
 def draw_room(room_id):
+    rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+    if room_id not in rooms:
+        return redirect(url_for("home"))
+
+    db.incr(f"{room_id}:users_count", amount=1)
+
     return render_template("draw_room.html")
 
 
@@ -29,8 +37,16 @@ def create_room_form():
     if request.form:
         username = request.form.get("name")
         room_visibility = request.form.get("roomVisiblity")
+        room_id = secrets.token_hex(8)
 
-        return redirect(url_for("draw_room", room_id=secrets.token_hex(8)))
+        rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+        while room_id in rooms:
+            room_id = secrets.token_hex(8)
+
+        db.rpush("rooms", room_id)
+        db.set(f"{room_id}:users_count", 0)
+
+        return redirect(url_for("draw_room", room_id=room_id))
     else:
         return redirect(url_for("home"))
 
@@ -38,6 +54,20 @@ def create_room_form():
 @socketio.on("connect")
 def on_connect():
     print("Connected!")
+
+
+@socketio.on("client_disconnecting")
+def on_client_disconnect(data):
+    print("Client disconnected")
+
+    room_id = data.get("roomId")
+    db.decr(f"{room_id}:users_count", amount=1)
+    room_users_count = db.get(f"{room_id}:users_count").decode("utf-8")
+
+    if int(room_users_count) == 0:
+        print("Deleting room..")
+        db.delete(f"{room_id}:users_count")
+        db.lrem("rooms", 1, room_id)
 
 
 @socketio.on("create")
