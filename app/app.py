@@ -61,18 +61,25 @@ def on_client_disconnect(data):
     print("Client disconnected")
 
     room_id = data.get("roomId")
+    # Decrease room users count by 1
     db.decr(f"{room_id}:users_count", amount=1)
+    # Remove user's sid from room's sids list
+    db.lrem(f"{room_id}:users_sids", 1, request.sid)
+
     room_users_count = db.get(f"{room_id}:users_count").decode("utf-8")
 
     if int(room_users_count) == 0:
         print("Deleting room..")
         db.delete(f"{room_id}:users_count")
+        db.delete(f"{room_id}:users_sids")
         db.lrem("rooms", 1, room_id)
 
 
 @socketio.on("create")
 def create_room(room):
     join_room(room)
+    # Add user's sid to room's sids list
+    db.rpush(f"{room}:users_sids", request.sid)
     print("Joined room " + room)
 
 
