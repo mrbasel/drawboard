@@ -36,12 +36,10 @@ def draw_room(room_id):
 
 @app.route("/room/form/create", methods=["POST"])
 def create_room_form():
-    if request.form:
-        username = request.form.get("name")
-        room_visibility = request.form.get("roomVisiblity")
+    if request.method == "POST":
         room_id = secrets.token_hex(8)
-
         rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+
         while room_id in rooms:
             room_id = secrets.token_hex(8)
 

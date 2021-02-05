@@ -23,86 +23,9 @@
             <div class="container text-center my-4">
                 <h1 class="display-4">DrawBoard</h1>
                 <p class="lead">An online drawing application.</p>
-                <div class="container my-4">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#createRoomModal">Create room</button>
-                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#joinRoomModal">Join
-                        room</button>
-                </div>
-
-                <!-- Create room modal -->
-                <div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="createRoomLabel">Create room</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container">
-                                    <form action="{{ url_for('create_room_form') }}" id="createRoomForm"
-                                        class="text-start" method="POST">
-                                        <div class="mb-3">
-                                            <label for="name" class="col-form-label">Your name:</label>
-                                            <input type="text" class="form-control" id="name" name="name">
-                                        </div>
-                                        <div class="mb-3">
-                                            <input class="form-check-input" type="radio" name="roomVisiblity"
-                                                id="public" value="public">
-                                            <label class="form-check-label" for="public">
-                                                Public room
-                                            </label>
-                                        </div>
-                                        <div class="mb-3">
-                                            <input class="form-check-input" type="radio" name="roomVisiblity"
-                                                id="private" value="private">
-                                            <label class="form-check-label" for="private">
-                                                Private room
-                                            </label>
-                                        </div>
-
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button id="createRoomBtn" type="submit" class="btn btn-primary">Create</button>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Join room modal -->
-                <div class="modal fade" id="joinRoomModal" tabindex="-1" aria-labelledby="joinRoomLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="joinRoomLabel">Join room</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="text-start" action="POST">
-                                    <div class="mb-3">
-                                        <label for="name" class="col-form-label">Your name:</label>
-                                        <input type="text" class="form-control" id="name">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="name" class="col-form-label">Room id:</label>
-                                        <input type="text" class="form-control" id="roomId">
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Join</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <form class="container my-4" action="{{ url_for('create_room_form') }}" id="createRoomForm" method="POST">
+                    <button type="submit" class="btn btn-primary">Start drawing</button>
+                </form>
             </div>
         </section>
 
