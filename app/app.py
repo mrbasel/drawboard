@@ -1,9 +1,11 @@
 import os
 import secrets
+import time
 
 from flask import Flask, request, render_template, url_for, redirect
 from redis import Redis
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit, leave_room
+from flask_socketio import join_room as join_socket_room
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -63,9 +65,6 @@ def on_client_disconnect(data):
     room_id = data.get("roomId")
     # Decrease room users count by 1
     db.decr(f"{room_id}:users_count", amount=1)
-    # Remove user's sid from room's sids list
-    db.lrem(f"{room_id}:users_sids", 1, request.sid)
-
     room_users_count = db.get(f"{room_id}:users_count").decode("utf-8")
 
     if int(room_users_count) == 0:
@@ -75,12 +74,35 @@ def on_client_disconnect(data):
         db.lrem("rooms", 1, room_id)
 
 
-@socketio.on("create")
-def create_room(room):
-    join_room(room)
-    # Add user's sid to room's sids list
-    db.rpush(f"{room}:users_sids", request.sid)
-    print("Joined room " + room)
+@socketio.on("joinRoom")
+def join_room(room):
+    join_socket_room(room)
+
+    room_users_count = db.get(f"{room}:users_count").decode("utf-8")
+    if int(room_users_count) > 1:
+        emit(
+            "getCanvasImage",
+            broadcast=False,
+            include_self=False,
+            room=room,
+        )
+        time.sleep(1)
+        canvas_image = db.get(f"{room}:image")
+
+        emit(
+            "newCanvasImageEvent",
+            canvas_image.decode("utf-8"),
+            broadcast=False,
+            include_self=True,
+        )
+
+
+@socketio.on("saveCanvasImage")
+def save_canvas_img(data):
+    image_data = data.get("image")
+    room_id = data.get("roomId")
+
+    db.set(f"{room_id}:image", image_data)
 
 
 @socketio.on("drawEvent")
@@ -114,7 +136,10 @@ def handle_erase_event(data):
 
 @socketio.on("clearEvent")
 def clear_canvas(data):
-    emit("clearEvent", broadcast=True, include_self=False, room=data["room"])
+    room_id = data.get("room")
+    db.delete(f"{room_id}:image")
+
+    emit("clearEvent", broadcast=True, include_self=False, room=room_id)
 
 
 if __name__ == "__main__":

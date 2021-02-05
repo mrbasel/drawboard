@@ -12,6 +12,7 @@ window.onload = () => {
     let socket = io();
     const canvasData = new CanvasData(getRoomId(), true, "#000000");
     const canvas = document.querySelector('#canvas');
+    const canvasContext = canvas.getContext("2d");
     const sketchpad = new Atrament(canvas, {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -23,7 +24,7 @@ window.onload = () => {
         return "";
     }
 
-    socket.on("connect", () => { socket.emit("create", canvasData.roomId); console.log(canvasData.roomId); });
+    socket.on("connect", () => { socket.emit("joinRoom", canvasData.roomId); console.log(canvasData.roomId); });
     socket.on("disconnect", () => { socket.emit("disconnect") });
 
     socket.on("drawEvent", (strokeData) => drawStroke(strokeData, sketchpad, canvasData));
@@ -31,6 +32,25 @@ window.onload = () => {
     socket.on("clearEvent", () => sketchpad.clear());
 
     socket.on("eraseEvent", (strokeData) => eraseStroke(strokeData, sketchpad, canvasData));
+
+    socket.on("getCanvasImage", () => {
+        let canvasImage = sketchpad.toImage();
+
+        socket.emit("saveCanvasImage", {
+            roomId: canvasData.roomId,
+            image: canvasImage
+        })
+    });
+
+    socket.on("newCanvasImageEvent", (canvasImage) => {
+        let img = new Image();
+        img.src = canvasImage;
+
+        img.onload = () => {
+            canvasContext.drawImage(img, 0, 0);
+            console.log("Image drawn!");
+        }
+    });
 
     sketchpad.addEventListener('strokerecorded', ({ stroke }) => {
         if (canvasData.recordStrokes) {
