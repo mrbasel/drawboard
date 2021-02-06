@@ -14,8 +14,8 @@ window.onload = () => {
     const canvas = document.querySelector('#canvas');
     const canvasContext = canvas.getContext("2d");
     const sketchpad = new Atrament(canvas, {
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.screen.availWidth,
+        height: window.screen.availHeight,
     });
     sketchpad.recordStrokes = true;
 
