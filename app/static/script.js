@@ -3,9 +3,12 @@ import {
     colorPicker,
     selectModeButton,
     thicknessSlider,
+    drawButton,
+    eraseButton
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
+import { handleToolbarClick } from "./toolbar.js";
 
 
 window.onload = () => {
@@ -76,6 +79,16 @@ window.onload = () => {
     );
 
     canvas.addEventListener("mousedown", () => canvasData.recordStrokes = true);
+
+    drawButton.addEventListener("click", () => {
+        sketchpad.mode = "draw";
+        handleToolbarClick(drawButton);
+    });
+
+    eraseButton.addEventListener("click", () => {
+        sketchpad.mode = "erase";
+        handleToolbarClick(eraseButton);
+    });
 
     clearButton.addEventListener("click", () => {
         sketchpad.clear();

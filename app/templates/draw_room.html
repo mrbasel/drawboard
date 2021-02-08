@@ -36,7 +36,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fs-5" for="mode">Thickness</label>
-                        <input class="form-range" type="range" min="1" max="50" value="2" name="thickness" id="thickness-slider">
+                        <input class="form-range" type="range" min="1" max="50" value="2" name="thickness"
+                            id="thickness-slider">
                     </div>
                     <div class="my-3">
                         <button id="clear-btn" class="btn btn-secondary">Clear</button>
@@ -49,6 +50,11 @@
         </div>
     </div>
     <canvas id="canvas"></canvas>
+
+    <div class="toolbar">
+        <li class="toolbarBtn" id="drawBtn"><img src="{{ url_for('static', filename='draw.svg') }}"></li>
+        <li class="toolbarBtn" id="eraseBtn"><img src="{{ url_for('static', filename='eraser.svg') }}"></li>
+    </div>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
@@ -76,6 +82,35 @@
             top: 0;
             left: 0;
             margin: .5em;
+        }
+
+        .toolbar {
+            position: fixed;
+            width: 40px;
+            top: 20%;
+            left: 10px;
+            background-color: #eee;
+            border-radius: 10px;
+        }
+
+        .toolbar li {
+            padding: 1em 0;
+            list-style: none;
+            text-align: center;
+            background-color: #eee;
+        }
+
+        .toolbar img {
+            width: 20px;
+            height: 20px;
+        }
+
+        #drawBtn {
+            background-color: rgb(206, 206, 206);
+        }
+
+        .toolbar li:hover {
+            background-color: #cecece;
         }
     </style>
 </body>
