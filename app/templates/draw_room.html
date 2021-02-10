@@ -52,9 +52,9 @@
     <canvas id="canvas"></canvas>
 
     <div class="toolbar">
-        <li class="toolbarBtn" id="drawBtn"><img src="{{ url_for('static', filename='icons/draw.svg') }}"></li>
-        <li class="toolbarBtn" id="eraseBtn"><img src="{{ url_for('static', filename='icons/eraser.svg') }}"></li>
-        <li class="toolbarBtn" id="colorPickerBtn"><img src="{{ url_for('static', filename='icons/color.svg') }}">
+        <li class="toolbarBtn" id="drawBtn" title="Draw"><img src="{{ url_for('static', filename='icons/draw.svg') }}"></li>
+        <li class="toolbarBtn" id="eraseBtn" title="Eraser"><img src="{{ url_for('static', filename='icons/eraser.svg') }}"></li>
+        <li class="toolbarBtn" id="colorPickerBtn" title="Color picker"><img src="{{ url_for('static', filename='icons/color.svg') }}">
             <input class="mx-2" type="color" name="color" id="colorPicker">
         </li>
         <li class="toolbarBtn" id="clearBtn" title="Clear board"><img src="{{ url_for('static', filename='icons/trash.svg') }}"></li>
