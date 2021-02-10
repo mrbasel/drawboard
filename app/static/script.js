@@ -6,6 +6,7 @@ import {
     drawButton,
     eraseButton,
     colorPickerBtn,
+    clearBtn
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
@@ -99,6 +100,17 @@ window.onload = () => {
     colorPicker.addEventListener("change", (event) => {
         canvasData.strokesColor = event.target.value;
         sketchpad.color = event.target.value;
+    });
+
+    clearBtn.addEventListener("click", () => {
+        const confirmClear = confirm("Are you sure you want to clear the board?");
+
+        if (confirmClear) {
+            sketchpad.clear();
+            socket.emit("clearEvent", {
+                room: canvasData.roomId
+            });
+        }
     });
 
     clearButton.addEventListener("click", () => {
