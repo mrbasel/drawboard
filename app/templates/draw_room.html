@@ -54,6 +54,9 @@
     <div class="toolbar">
         <li class="toolbarBtn" id="drawBtn"><img src="{{ url_for('static', filename='icons/draw.svg') }}"></li>
         <li class="toolbarBtn" id="eraseBtn"><img src="{{ url_for('static', filename='icons/eraser.svg') }}"></li>
+        <li class="toolbarBtn" id="colorPickerBtn"><img src="{{ url_for('static', filename='icons/color.svg') }}">
+            <input class="mx-2" type="color" name="color" id="colorPicker">
+        </li>
     </div>
 
 
@@ -111,6 +114,10 @@
 
         .toolbar li:hover {
             background-color: #cecece;
+        }
+
+        #colorPicker {
+            display: none;
         }
     </style>
 </body>

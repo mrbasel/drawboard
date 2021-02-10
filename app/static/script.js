@@ -4,7 +4,8 @@ import {
     selectModeButton,
     thicknessSlider,
     drawButton,
-    eraseButton
+    eraseButton,
+    colorPickerBtn,
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
@@ -90,15 +91,21 @@ window.onload = () => {
         handleToolbarClick(eraseButton);
     });
 
+    colorPickerBtn.addEventListener("click", () => {
+        // Show color picker menu
+        colorPicker.click();
+    })
+
+    colorPicker.addEventListener("change", (event) => {
+        canvasData.strokesColor = event.target.value;
+        sketchpad.color = event.target.value;
+    });
+
     clearButton.addEventListener("click", () => {
         sketchpad.clear();
         socket.emit("clearEvent", {
             room: canvasData.roomId
         });
-    });
-    colorPicker.addEventListener("change", (event) => {
-        canvasData.strokesColor = event.target.value;
-        sketchpad.color = event.target.value;
     });
     selectModeButton.addEventListener("change", () => {
         sketchpad.mode = selectModeButton.value;
