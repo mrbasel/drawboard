@@ -6,6 +6,7 @@ const drawButton = document.querySelector("#drawBtn");
 const eraseButton = document.querySelector("#eraseBtn");
 const colorPickerBtn = document.querySelector("#colorPickerBtn");
 const clearBtn = document.querySelector("#clearBtn");
+const thinknessBtn = document.querySelector("#thicknessBtn")
 
 export {
     clearButton,
@@ -15,5 +16,6 @@ export {
     drawButton,
     eraseButton,
     colorPickerBtn,
-    clearBtn
+    clearBtn,
+    thinknessBtn
 };

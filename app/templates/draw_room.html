@@ -36,8 +36,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fs-5" for="mode">Thickness</label>
-                        <input class="form-range" type="range" min="1" max="50" value="2" name="thickness"
-                            id="thickness-slider">
+                        <!-- <input class="form-range" type="range" min="1" max="50" value="2" name="thickness"
+                            id="thickness-slider"> -->
                     </div>
                     <div class="my-3">
                         <button id="clear-btn" class="btn btn-secondary">Clear</button>
@@ -52,12 +52,21 @@
     <canvas id="canvas"></canvas>
 
     <div class="toolbar">
-        <li class="toolbarBtn" id="drawBtn" title="Draw"><img src="{{ url_for('static', filename='icons/draw.svg') }}"></li>
-        <li class="toolbarBtn" id="eraseBtn" title="Eraser"><img src="{{ url_for('static', filename='icons/eraser.svg') }}"></li>
-        <li class="toolbarBtn" id="colorPickerBtn" title="Color picker"><img src="{{ url_for('static', filename='icons/color.svg') }}">
+        <li class="toolbarBtn" id="drawBtn" title="Draw">
+            <img src="{{ url_for('static', filename='icons/draw.svg') }}">
+            <img class="arrow" id="thicknessBtn" src="{{ url_for('static', filename='icons/arrow-right.svg') }}">
+            <div class="popup">
+                <input type="range" id="thickness-slider" name="thickness" min="1" max="50" value="2">
+            </div>
+        </li>
+        <li class="toolbarBtn" id="eraseBtn" title="Eraser"><img
+                src="{{ url_for('static', filename='icons/eraser.svg') }}"></li>
+        <li class="toolbarBtn" id="colorPickerBtn" title="Color picker"><img
+                src="{{ url_for('static', filename='icons/color.svg') }}">
             <input class="mx-2" type="color" name="color" id="colorPicker">
         </li>
-        <li class="toolbarBtn" id="clearBtn" title="Clear board"><img src="{{ url_for('static', filename='icons/trash.svg') }}"></li>
+        <li class="toolbarBtn" id="clearBtn" title="Clear board"><img
+                src="{{ url_for('static', filename='icons/trash.svg') }}"></li>
     </div>
 
 
@@ -109,16 +118,40 @@
             height: 20px;
         }
 
-        #drawBtn {
-            background-color: rgb(206, 206, 206);
-        }
-
         .toolbar li:hover {
-            background-color: #cecece;
+            background-color: rgb(206, 206, 206);
         }
 
         #colorPicker {
             display: none;
+        }
+
+        #drawBtn {
+            position: relative;
+            background-color: rgb(206, 206, 206);
+            z-index: 3;
+        }
+
+        .arrow {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+        .arrow:hover {
+            background-color: #aaaaaa;
+            border-radius: 5px;
+        }
+
+        .popup {
+            display: none;
+            background-color: rgb(206, 206, 206);
+            padding: 1em 0;
+            width: 150px;
+            position: absolute;
+            bottom: 0;
+            left: 50px;
         }
     </style>
 </body>

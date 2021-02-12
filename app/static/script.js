@@ -6,7 +6,8 @@ import {
     drawButton,
     eraseButton,
     colorPickerBtn,
-    clearBtn
+    clearBtn,
+    thinknessBtn
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
@@ -85,6 +86,18 @@ window.onload = () => {
     drawButton.addEventListener("click", () => {
         sketchpad.mode = "draw";
         handleToolbarClick(drawButton);
+    });
+
+    thinknessBtn.addEventListener("click", () => {
+        // Boolean indicating if pop is open or not
+        const isOpen = document.querySelector('.popup').style.display == 'block';
+
+        if (isOpen) {
+            document.querySelector('.popup').style.display = 'none';
+        }
+        else {
+            document.querySelector('.popup').style.display = 'block';
+        }
     });
 
     eraseButton.addEventListener("click", () => {
