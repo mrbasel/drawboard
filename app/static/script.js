@@ -1,12 +1,10 @@
 import {
     clearButton,
     colorPicker,
-    selectModeButton,
     thicknessSlider,
     drawButton,
     eraseButton,
     colorPickerBtn,
-    clearBtn,
     thinknessBtn
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
@@ -115,7 +113,7 @@ window.onload = () => {
         sketchpad.color = event.target.value;
     });
 
-    clearBtn.addEventListener("click", () => {
+    clearButton.addEventListener("click", () => {
         const confirmClear = confirm("Are you sure you want to clear the board?");
 
         if (confirmClear) {
@@ -126,15 +124,6 @@ window.onload = () => {
         }
     });
 
-    clearButton.addEventListener("click", () => {
-        sketchpad.clear();
-        socket.emit("clearEvent", {
-            room: canvasData.roomId
-        });
-    });
-    selectModeButton.addEventListener("change", () => {
-        sketchpad.mode = selectModeButton.value;
-    });
     thicknessSlider.addEventListener("change", () => {
         sketchpad.weight = parseInt(thicknessSlider.value);
     });

@@ -10,45 +10,6 @@
 </head>
 
 <body>
-    <button id="settings-btn" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#settingsModal">Settings</button>
-
-    <!-- Settings modal -->
-    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fs-5" for="color">Color</label>
-                        <input class="mx-2" type="color" name="color" id="color-picker">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fs-5" for="mode">Mode:</label>
-                        <select class="form-select my-2" name="mode" id="select-mode">
-                            <option value="draw">Draw</option>
-                            <option value="erase">erase</option>
-                            <option value="fill">Fill</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fs-5" for="mode">Thickness</label>
-                        <!-- <input class="form-range" type="range" min="1" max="50" value="2" name="thickness"
-                            id="thickness-slider"> -->
-                    </div>
-                    <div class="my-3">
-                        <button id="clear-btn" class="btn btn-secondary">Clear</button>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <canvas id="canvas"></canvas>
 
     <div class="toolbar">
