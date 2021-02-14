@@ -1,0 +1,67 @@
+
+html, * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#canvas {
+    border: 1px solid #333;
+}
+
+.toolbar {
+    position: fixed;
+    width: 40px;
+    top: 20%;
+    left: 10px;
+    background-color: #eee;
+    border-radius: 10px;
+}
+
+.toolbarBtn {
+    padding: 1em 0;
+    list-style: none;
+    text-align: center;
+    background-color: #eee;
+}
+
+.toolbarIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.toolbarBtn:hover {
+    background-color: rgb(206, 206, 206);
+}
+
+#colorPicker {
+    display: none;
+}
+
+#drawBtn {
+    position: relative;
+    background-color: rgb(206, 206, 206);
+    z-index: 3;
+}
+
+.arrow {
+    position: absolute;
+    width: 10px;
+    bottom: 2px;
+    right: 2px;
+}
+
+.arrow:hover {
+    background-color: #aaaaaa;
+    border-radius: 5px;
+}
+
+.popup {
+    display: none;
+    background-color: rgb(206, 206, 206);
+    padding: 1em 0;
+    width: 150px;
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+}

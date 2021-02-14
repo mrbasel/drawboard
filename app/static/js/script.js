@@ -1,11 +1,15 @@
 import {
     clearButton,
     colorPicker,
-    selectModeButton,
     thicknessSlider,
+    drawButton,
+    eraseButton,
+    colorPickerBtn,
+    thinknessBtn
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
+import { handleToolbarClick } from "./toolbar.js";
 
 
 window.onload = () => {
@@ -14,8 +18,8 @@ window.onload = () => {
     const canvas = document.querySelector('#canvas');
     const canvasContext = canvas.getContext("2d");
     const sketchpad = new Atrament(canvas, {
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.screen.availWidth,
+        height: window.screen.availHeight,
     });
     sketchpad.recordStrokes = true;
 
@@ -77,19 +81,49 @@ window.onload = () => {
 
     canvas.addEventListener("mousedown", () => canvasData.recordStrokes = true);
 
-    clearButton.addEventListener("click", () => {
-        sketchpad.clear();
-        socket.emit("clearEvent", {
-            room: canvasData.roomId
-        });
+    drawButton.addEventListener("click", () => {
+        sketchpad.mode = "draw";
+        handleToolbarClick(drawButton);
     });
+
+    thinknessBtn.addEventListener("click", () => {
+        // Boolean indicating if pop is open or not
+        const isOpen = document.querySelector('.popup').style.display == 'block';
+
+        if (isOpen) {
+            document.querySelector('.popup').style.display = 'none';
+        }
+        else {
+            document.querySelector('.popup').style.display = 'block';
+        }
+    });
+
+    eraseButton.addEventListener("click", () => {
+        sketchpad.mode = "erase";
+        handleToolbarClick(eraseButton);
+    });
+
+    colorPickerBtn.addEventListener("click", () => {
+        // Show color picker menu
+        colorPicker.click();
+    })
+
     colorPicker.addEventListener("change", (event) => {
         canvasData.strokesColor = event.target.value;
         sketchpad.color = event.target.value;
     });
-    selectModeButton.addEventListener("change", () => {
-        sketchpad.mode = selectModeButton.value;
+
+    clearButton.addEventListener("click", () => {
+        const confirmClear = confirm("Are you sure you want to clear the board?");
+
+        if (confirmClear) {
+            sketchpad.clear();
+            socket.emit("clearEvent", {
+                room: canvasData.roomId
+            });
+        }
     });
+
     thicknessSlider.addEventListener("change", () => {
         sketchpad.weight = parseInt(thicknessSlider.value);
     });
