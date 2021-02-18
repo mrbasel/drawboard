@@ -80,7 +80,10 @@ window.onload = () => {
     }
     );
 
-    canvas.addEventListener("mousedown", () => canvasData.recordStrokes = true);
+    canvas.addEventListener("mousedown", () => {
+        canvasData.recordStrokes = true;
+        thicknessBarPopup.style.display = 'none';
+    });
 
     drawButton.addEventListener("click", () => {
         sketchpad.mode = "draw";
