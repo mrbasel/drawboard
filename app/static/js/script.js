@@ -5,7 +5,8 @@ import {
     drawButton,
     eraseButton,
     colorPickerBtn,
-    thinknessBtn
+    thinknessBtn,
+    thicknessBarPopup
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
@@ -88,24 +89,26 @@ window.onload = () => {
 
     thinknessBtn.addEventListener("click", () => {
         // Boolean indicating if pop is open or not
-        const isOpen = document.querySelector('.popup').style.display == 'block';
+        const isOpen = thicknessBarPopup.style.display == 'block';
 
         if (isOpen) {
-            document.querySelector('.popup').style.display = 'none';
+            thicknessBarPopup.style.display = 'none';
         }
         else {
-            document.querySelector('.popup').style.display = 'block';
+            thicknessBarPopup.style.display = 'block';
         }
     });
 
     eraseButton.addEventListener("click", () => {
         sketchpad.mode = "erase";
         handleToolbarClick(eraseButton);
+        thicknessBarPopup.style.display = 'none';
     });
 
     colorPickerBtn.addEventListener("click", () => {
         // Show color picker menu
         colorPicker.click();
+        thicknessBarPopup.style.display = 'none';
     })
 
     colorPicker.addEventListener("change", (event) => {
@@ -114,8 +117,9 @@ window.onload = () => {
     });
 
     clearButton.addEventListener("click", () => {
-        const confirmClear = confirm("Are you sure you want to clear the board?");
+        thicknessBarPopup.style.display = 'none';
 
+        const confirmClear = confirm("Are you sure you want to clear the board?");
         if (confirmClear) {
             sketchpad.clear();
             socket.emit("clearEvent", {
