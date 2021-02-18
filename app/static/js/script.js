@@ -5,7 +5,7 @@ import {
     drawButton,
     eraseButton,
     colorPickerBtn,
-    thinknessBtn,
+    thicknessBtn,
     thicknessBarPopup
 } from "./constants.js";
 import { getRoomId, CanvasData } from "./helpers.js";
@@ -87,7 +87,7 @@ window.onload = () => {
         handleToolbarClick(drawButton);
     });
 
-    thinknessBtn.addEventListener("click", () => {
+    thicknessBtn.addEventListener("click", () => {
         // Boolean indicating if pop is open or not
         const isOpen = thicknessBarPopup.style.display == 'block';
 
