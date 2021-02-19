@@ -4,7 +4,8 @@ const thicknessSlider = document.querySelector("#thickness-slider");
 const drawButton = document.querySelector("#drawBtn");
 const eraseButton = document.querySelector("#eraseBtn");
 const colorPickerBtn = document.querySelector("#colorPickerBtn");
-const thinknessBtn = document.querySelector("#thicknessBtn")
+const thicknessBtn = document.querySelector("#thicknessBtn")
+const thicknessBarPopup = document.querySelector('.popup');
 
 export {
     clearButton,
@@ -13,5 +14,6 @@ export {
     drawButton,
     eraseButton,
     colorPickerBtn,
-    thinknessBtn
+    thicknessBtn,
+    thicknessBarPopup
 };
