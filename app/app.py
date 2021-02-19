@@ -87,12 +87,13 @@ def join_room(room):
         time.sleep(1)
         canvas_image = db.get(f"{room}:image")
 
-        emit(
-            "newCanvasImageEvent",
-            canvas_image.decode("utf-8"),
-            broadcast=False,
-            include_self=True,
-        )
+        if canvas_image:
+            emit(
+                "newCanvasImageEvent",
+                canvas_image.decode("utf-8"),
+                broadcast=False,
+                include_self=True,
+            )
 
 
 @socketio.on("saveCanvasImage")
