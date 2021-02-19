@@ -26,7 +26,6 @@ window.onload = () => {
 
     window.onbeforeunload = () => {
         socket.emit('client_disconnecting', { roomId: canvasData.roomId });
-        return "";
     }
 
     socket.on("connect", () => { socket.emit("joinRoom", canvasData.roomId); console.log(canvasData.roomId); });
