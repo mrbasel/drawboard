@@ -29,8 +29,6 @@ def draw_room(room_id):
     if room_id not in rooms:
         return redirect(url_for("home"))
 
-    db.incr(f"{room_id}:users_count", amount=1)
-
     return render_template("draw_room.html")
 
 
@@ -44,7 +42,6 @@ def create_room_form():
             room_id = secrets.token_hex(8)
 
         db.rpush("rooms", room_id)
-        db.set(f"{room_id}:users_count", 0)
 
         return redirect(url_for("draw_room", room_id=room_id))
     else:
@@ -61,16 +58,13 @@ def on_client_disconnect(data):
     print("Client disconnected")
 
     room_id = data.get("roomId")
-    # Decrease room users count by 1
-    db.decr(f"{room_id}:users_count", amount=1)
-    room_users_count = db.get(f"{room_id}:users_count").decode("utf-8")
 
     # Remove user's id from db
     db.lrem(f"{room_id}:users_ids", 1, request.sid)
+    room_users_count = db.lrange(f"{room_id}:users_ids", 0, -1)
 
-    if int(room_users_count) == 0:
+    if len(room_users_count) == 0:
         print("Deleting room..")
-        db.delete(f"{room_id}:users_count")
         db.delete(f"{room_id}:users_ids")
         db.lrem("rooms", 1, room_id)
 
@@ -78,11 +72,11 @@ def on_client_disconnect(data):
 @socketio.on("joinRoom")
 def join_room(room):
     join_socket_room(room)
+
     room_users_ids = [i.decode("utf-8") for i in db.lrange(f"{room}:users_ids", 0, -1)]
     db.rpush(f"{room}:users_ids", request.sid)
-
-    room_users_count = db.get(f"{room}:users_count").decode("utf-8")
-    if int(room_users_count) > 1:
+    
+    if len(room_users_ids) >= 1:
         print("Getting image")
         emit(
             "getCanvasImage",
