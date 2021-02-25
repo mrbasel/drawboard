@@ -28,7 +28,7 @@ window.onload = () => {
         socket.emit('client_disconnecting', { roomId: canvasData.roomId });
     }
 
-    socket.on("connect", () => { socket.emit("joinRoom", canvasData.roomId); console.log(canvasData.roomId); });
+    socket.on("connect", () => socket.emit("joinRoom", canvasData.roomId));
     socket.on("disconnect", () => { socket.emit("disconnect") });
 
     socket.on("drawEvent", (strokeData) => drawStroke(strokeData, sketchpad, canvasData));
@@ -39,8 +39,6 @@ window.onload = () => {
 
     socket.on("getCanvasImage", (userId) => {
         let canvasImage = sketchpad.toImage();
-
-        console.log("getCanvasImage EVENT");
 
         socket.emit("saveCanvasImage", {
             roomId: userId,
@@ -54,7 +52,6 @@ window.onload = () => {
 
         img.onload = () => {
             canvasContext.drawImage(img, 0, 0);
-            console.log("Image drawn!");
         }
     });
 
@@ -62,7 +59,6 @@ window.onload = () => {
         if (canvasData.recordStrokes) {
 
             if (sketchpad.mode == "draw") {
-                console.log(stroke);
                 socket.emit("drawEvent", {
                     coordinates: stroke.points,
                     weight: stroke.weight,
