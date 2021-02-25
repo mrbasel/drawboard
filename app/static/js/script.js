@@ -37,11 +37,13 @@ window.onload = () => {
 
     socket.on("eraseEvent", (strokeData) => eraseStroke(strokeData, sketchpad, canvasData));
 
-    socket.on("getCanvasImage", () => {
+    socket.on("getCanvasImage", (userId) => {
         let canvasImage = sketchpad.toImage();
 
+        console.log("getCanvasImage EVENT");
+
         socket.emit("saveCanvasImage", {
-            roomId: canvasData.roomId,
+            roomId: userId,
             image: canvasImage
         })
     });

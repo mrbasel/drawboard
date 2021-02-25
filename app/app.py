@@ -78,30 +78,25 @@ def join_room(room):
 
     room_users_count = db.get(f"{room}:users_count").decode("utf-8")
     if int(room_users_count) > 1:
+        print("Getting image")
         emit(
             "getCanvasImage",
+            request.sid,
             broadcast=False,
             include_self=False,
             room=room,
         )
-        time.sleep(1)
-        canvas_image = db.get(f"{room}:image")
-
-        if canvas_image:
-            emit(
-                "newCanvasImageEvent",
-                canvas_image.decode("utf-8"),
-                broadcast=False,
-                include_self=True,
-            )
 
 
 @socketio.on("saveCanvasImage")
 def save_canvas_img(data):
-    image_data = data.get("image")
-    room_id = data.get("roomId")
-
-    db.set(f"{room_id}:image", image_data)
+    emit(
+        "newCanvasImageEvent",
+        data.get("image"),
+        broadcast=False,
+        include_self=False,
+        room=data.get("roomId"),
+    )
 
 
 @socketio.on("drawEvent")
