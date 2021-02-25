@@ -65,16 +65,21 @@ def on_client_disconnect(data):
     db.decr(f"{room_id}:users_count", amount=1)
     room_users_count = db.get(f"{room_id}:users_count").decode("utf-8")
 
+    # Remove user's id from db
+    db.lrem(f"{room_id}:users_ids", 1, request.sid)
+
     if int(room_users_count) == 0:
         print("Deleting room..")
         db.delete(f"{room_id}:users_count")
-        db.delete(f"{room_id}:users_sids")
+        db.delete(f"{room_id}:users_ids")
         db.lrem("rooms", 1, room_id)
 
 
 @socketio.on("joinRoom")
 def join_room(room):
     join_socket_room(room)
+    room_users_ids = [i.decode("utf-8") for i in db.lrange(f"{room}:users_ids", 0, -1)]
+    db.rpush(f"{room}:users_ids", request.sid)
 
     room_users_count = db.get(f"{room}:users_count").decode("utf-8")
     if int(room_users_count) > 1:
@@ -84,7 +89,7 @@ def join_room(room):
             request.sid,
             broadcast=False,
             include_self=False,
-            room=room,
+            room=room_users_ids[0],
         )
 
 
