@@ -48,15 +48,8 @@ def create_room_form():
         return redirect(url_for("home"))
 
 
-@socketio.on("connect")
-def on_connect():
-    print("Connected!")
-
-
 @socketio.on("client_disconnecting")
 def on_client_disconnect(data):
-    print("Client disconnected")
-
     room_id = data.get("roomId")
 
     # Remove user's id from db
@@ -64,7 +57,6 @@ def on_client_disconnect(data):
     room_users_count = db.lrange(f"{room_id}:users_ids", 0, -1)
 
     if len(room_users_count) == 0:
-        print("Deleting room..")
         db.delete(f"{room_id}:users_ids")
         db.lrem("rooms", 1, room_id)
 
@@ -75,9 +67,8 @@ def join_room(room):
 
     room_users_ids = [i.decode("utf-8") for i in db.lrange(f"{room}:users_ids", 0, -1)]
     db.rpush(f"{room}:users_ids", request.sid)
-    
+
     if len(room_users_ids) >= 1:
-        print("Getting image")
         emit(
             "getCanvasImage",
             request.sid,
