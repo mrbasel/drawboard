@@ -2,3 +2,5 @@
 .vscode
 .pyc
 .env
+node_modules
+main.js
