@@ -12,6 +12,8 @@ import { getRoomId, CanvasData } from "./helpers.js";
 import { drawStroke, eraseStroke } from "./stroke_events.js";
 import { handleToolbarClick } from "./toolbar.js";
 
+import Atrament from "atrament";
+
 
 window.onload = () => {
     let socket = io();

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <title>Drawboard</title>
 </head>
 
@@ -17,13 +18,23 @@
             </div>
         </nav>
     </header>
-
     <main>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="alert alert-danger" role="alert">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
         <section id="#section-1" class="py-4">
             <div class="container text-center my-4">
                 <h1 class="display-4">DrawBoard</h1>
                 <p class="lead">An online drawing application.</p>
-                <form class="container my-4" action="{{ url_for('create_room_form') }}" id="createRoomForm" method="POST">
+                <form class="container my-4" action="{{ url_for('create_room_form') }}" id="createRoomForm"
+                    method="POST">
                     <button type="submit" class="btn btn-primary">Start drawing</button>
                 </form>
             </div>

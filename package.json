@@ -1,0 +1,26 @@
+{
+  "name": "drawboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrbasel/drawboard.git"
+  },
+  "author": "Basel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrbasel/drawboard/issues"
+  },
+  "homepage": "https://github.com/mrbasel/drawboard#readme",
+  "dependencies": {
+    "atrament": "^1.4.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0"
+  }
+}

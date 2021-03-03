@@ -2,8 +2,9 @@ import os
 import secrets
 import time
 
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, flash
 from redis import Redis
+from redis.exceptions import ConnectionError
 from flask_socketio import SocketIO, emit, leave_room
 from flask_socketio import join_room as join_socket_room
 from dotenv import load_dotenv
@@ -25,7 +26,12 @@ def home():
 
 @app.route("/room/<room_id>", methods=["GET"])
 def draw_room(room_id):
-    rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+    try:
+        rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+    except ConnectionError:
+        flash("Something went wrong, please try again later.", "error")
+        return redirect(url_for("home"))
+
     if room_id not in rooms:
         return redirect(url_for("home"))
 
@@ -36,7 +42,12 @@ def draw_room(room_id):
 def create_room_form():
     if request.method == "POST":
         room_id = secrets.token_hex(8)
-        rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+
+        try:
+            rooms = [i.decode("utf-8") for i in db.lrange("rooms", 0, -1)]
+        except ConnectionError:
+            flash("Something went wrong, please try again later.", "error")
+            return redirect(url_for("home"))
 
         while room_id in rooms:
             room_id = secrets.token_hex(8)
@@ -50,7 +61,6 @@ def create_room_form():
 
 @socketio.on("client_disconnecting")
 def on_client_disconnect(data):
-    print("CLIENT DISCONNECTED")
     room_id = data.get("roomId")
 
     # Remove user's id from db
