@@ -13,7 +13,7 @@ import { drawStroke, eraseStroke } from "./stroke_events.js";
 import { handleToolbarClick } from "./toolbar.js";
 
 import Atrament from "atrament";
-
+const io = require("socket.io-client");
 
 window.onload = () => {
     let socket = io();

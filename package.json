@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/mrbasel/drawboard#readme",
   "dependencies": {
-    "atrament": "^1.4.0"
+    "atrament": "^1.4.0",
+    "socket.io-client": "^3.1.2"
   },
   "devDependencies": {
     "webpack": "^5.24.2",
